@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="事故対応">
+<meta name="theme-color" content="#dc2626">
+<title>交通事故対応マニュアル｜こころのひなた</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23dc2626'/><text y='68' x='50' text-anchor='middle' font-size='56' font-family='system-ui'>🚨</text></svg>">
+<style>
+:root {
+  --red:#dc2626; --red-dark:#991b1b; --red-light:#fef2f2;
+  --amber:#d97706; --amber-light:#fffbeb;
+  --blue:#1d4ed8; --blue-light:#eff6ff;
+  --green:#15803d; --green-light:#f0fdf4;
+  --purple:#7c3aed; --purple-light:#f5f3ff;
+  --gray:#374151; --gray-light:#f9fafb; --gray-mid:#6b7280;
+  --border:#e5e7eb; --text:#111827; --bg:#f1f5f9; --card:#ffffff;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;font-family:-apple-system,'Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;}
+#app{display:flex;flex-direction:column;height:100dvh;}
+
+/* ── Header ── */
+.header{background:var(--red);color:#fff;padding:calc(var(--safe-top) + 8px) 12px 8px;flex-shrink:0;}
+.header-row1{display:flex;align-items:center;gap:8px;}
+.header-icon{font-size:18px;flex-shrink:0;}
+.header-titles{flex:1;min-width:0;}
+.header-title{font-size:15px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.header-sub{display:none;}
+/* 管理者シートボタン */
+.admin-btn{
+  flex-shrink:0;
+  background:rgba(255,255,255,.18);
+  border:1.5px solid rgba(255,255,255,.45);
+  color:#fff;border-radius:8px;
+  padding:4px 8px;font-size:11px;font-weight:700;
+  cursor:pointer;text-decoration:none;
+  display:flex;align-items:center;gap:3px;
+  white-space:nowrap;line-height:1.3;text-align:center;
+}
+.admin-btn:active{background:rgba(255,255,255,.3);}
+
+/* 時間帯セレクター — コンパクトトグル */
+.time-selector{display:flex;gap:0;background:rgba(0,0,0,.25);border-radius:10px;padding:3px;margin-top:8px;}
+.time-btn{
+  flex:1;padding:7px 6px;border-radius:8px;
+  border:none;
+  font-size:14px;font-weight:700;cursor:pointer;
+  transition:all .18s;text-align:center;
+  background:transparent;
+  color:rgba(255,255,255,.45);
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.time-btn .tb-icon{font-size:15px;}
+.time-btn .tb-label{font-size:14px;font-weight:700;}
+.time-btn .tb-sub{display:none;}
+.time-btn.active{
+  background:#fff;color:var(--red);
+  box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+.time-btn.active .tb-icon{opacity:1;}
+.time-btn.active .tb-label{color:var(--red);}
+
+/* コンテンツ上部の現在モードバナー */
+.mode-banner{
+  display:flex;align-items:center;gap:10px;
+  border-radius:12px;padding:11px 14px;margin-bottom:14px;
+  font-weight:700;font-size:21px;
+}
+.mode-banner.mode-time{background:#fff0f0;border:2px solid var(--red);color:var(--red-dark);}
+.mode-banner.mode-after{background:#fff8e1;border:2px solid #f59e0b;color:#92400e;}
+.mode-banner-icon{font-size:24px;flex-shrink:0;}
+.mode-banner-text{flex:1;}
+.mode-banner-title{font-size:21px;font-weight:800;}
+.mode-banner-sub{font-size:13px;font-weight:400;margin-top:1px;opacity:.8;}
+
+/* ── Content（タブなし・1画面） ── */
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:14px 14px calc(var(--safe-bottom) + 20px);}
+
+/* ── Step Timeline ── */
+.step-block{display:flex;}
+.step-line{display:flex;flex-direction:column;align-items:center;width:38px;flex-shrink:0;}
+.step-circle{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800;color:#fff;flex-shrink:0;z-index:1;}
+.sc-red{background:var(--red);}
+.sc-amber{background:var(--amber);}
+.sc-green{background:var(--green);}
+.sc-purple{background:var(--purple);}
+.step-connector{width:2px;flex:1;min-height:14px;background:var(--border);margin:3px 0;}
+.step-connector.last{display:none;}
+.step-body{flex:1;padding-bottom:18px;padding-left:8px;}
+.step-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;margin-top:7px;}
+.sl-red{color:var(--red);}
+.sl-amber{color:var(--amber);}
+.sl-green{color:var(--green);}
+.sl-purple{color:var(--purple);}
+.step-title{font-size:21px;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.3;}
+
+/* ── Inner Card ── */
+.inner-card{background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:8px;}
+
+/* ── Call Button ── */
+.call-btn{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;border-bottom:1px solid var(--border);
+  text-decoration:none;cursor:pointer;
+}
+.call-btn:last-child{border-bottom:none;}
+.call-btn:active{background:#fff5f5;}
+.call-info{flex:1;min-width:0;}
+.call-badge{display:inline-block;font-size:12px;font-weight:700;padding:1px 7px;border-radius:99px;margin-bottom:3px;}
+.b-blue{background:var(--blue-light);color:#1e3a8a;}
+.b-amber{background:var(--amber-light);color:#92400e;}
+.b-green{background:var(--green-light);color:#14532d;}
+.call-name{font-size:19px;font-weight:700;color:var(--text);}
+.call-role{font-size:13px;color:var(--gray-mid);margin-top:1px;}
+/* 発信ボタン本体 */
+.call-dial{
+  background:var(--red);color:#fff;
+  border-radius:10px;padding:8px 10px;
+  flex-shrink:0;text-align:center;
+  box-shadow:0 2px 6px rgba(220,38,38,.4);
+  min-width:64px;
+}
+.call-dial-icon{font-size:24px;line-height:1;}
+.call-dial-label{font-size:11px;font-weight:700;margin-top:2px;letter-spacing:.03em;}
+.call-dial-num{font-size:11px;opacity:.85;margin-top:1px;letter-spacing:.02em;}
+
+/* ── Alert ── */
+.alert{border-radius:10px;padding:10px 12px;font-size:19px;line-height:1.55;border-left:3.5px solid;margin-bottom:8px;}
+.alert-label{font-weight:700;font-size:13px;margin-bottom:3px;}
+.alert.danger{background:var(--red-light);border-color:var(--red);color:var(--red-dark);}
+.alert.warning{background:var(--amber-light);border-color:var(--amber);color:#92400e;}
+.alert.info{background:var(--blue-light);border-color:var(--blue);color:#1e3a8a;}
+.alert.success{background:var(--green-light);border-color:var(--green);color:#14532d;}
+
+/* ── Kind Selector ── */
+.kind-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
+.kind-btn{padding:9px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);font-size:21px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;}
+.kind-btn.k-red{background:var(--red-light);border-color:var(--red);color:var(--red-dark);}
+.kind-btn.k-amber{background:var(--amber-light);border-color:var(--amber);color:#92400e;}
+.kind-btn.k-blue{background:var(--blue-light);border-color:var(--blue);color:#1e3a8a;}
+
+/* ── Check List ── */
+.check-list{list-style:none;}
+.check-list li{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border);font-size:21px;line-height:1.45;color:var(--text);cursor:pointer;}
+.check-list li:last-child{border-bottom:none;}
+.check-list li:active{background:var(--gray-light);}
+.check-list li.done{color:var(--gray-mid);}
+.check-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;}
+li.done .check-box{background:var(--green);border-color:var(--green);}
+.check-box::after{content:'';display:none;width:6px;height:4px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-1px);}
+li.done .check-box::after{display:block;}
+li.done .check-text{text-decoration:line-through;}
+.check-text{flex:1;}
+.check-note{font-size:13px;color:var(--red-dark);font-weight:700;margin-top:2px;}
+
+/* ── Done Banner ── */
+.done-banner{background:var(--green-light);border:1.5px solid var(--green);border-radius:12px;padding:14px;text-align:center;margin-top:8px;display:none;}
+.done-banner.show{display:block;}
+.done-banner-icon{font-size:26px;margin-bottom:4px;}
+.done-banner-text{font-size:21px;font-weight:700;color:var(--green);}
+
+/* ── Form ── */
+.form-section-title{font-size:12px;font-weight:700;color:var(--gray-mid);letter-spacing:.07em;text-transform:uppercase;margin:14px 0 8px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
+.form-field{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 12px;}
+.form-field.full{grid-column:1/-1;}
+.form-label{font-size:12px;color:var(--gray-mid);font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em;}
+.form-input{width:100%;background:none;border:none;font-size:21px;font-family:inherit;color:var(--text);outline:none;min-height:22px;}
+.form-input::placeholder{color:#d1d5db;}
+
+/* ── Photo Upload ── */
+.photo-section{margin-top:6px;}
+.photo-label-row{font-size:12px;font-weight:700;color:var(--gray-mid);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.photo-slot{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--gray-light);border:2px dashed var(--border);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.photo-slot:active{background:#e5e7eb;}
+.photo-slot-icon{font-size:22px;opacity:.5;}
+.photo-slot-label{font-size:11px;color:var(--gray-mid);font-weight:600;text-align:center;padding:0 4px;line-height:1.3;}
+.photo-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.photo-slot .photo-del{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.photo-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+/* ── Reset Button ── */
+.reset-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:15px;border-radius:12px;
+  border:2.5px solid var(--amber);
+  font-size:15px;font-weight:800;cursor:pointer;
+  transition:all .15s;margin-top:10px;
+  background:var(--amber-light);color:#92400e;
+  letter-spacing:-.2px;
+}
+.reset-btn:active{background:#fde68a;}
+.submit-note{font-size:13px;color:var(--gray-mid);line-height:1.6;margin-top:8px;padding:10px 12px;background:var(--gray-light);border-radius:10px;border-left:3px solid var(--border);}
+.submit-note strong{color:var(--text);font-weight:700;}
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+.confirm-overlay.show{display:flex;}
+.confirm-box{background:#fff;border-radius:16px;padding:22px 18px;width:100%;max-width:340px;}
+.confirm-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.confirm-body{font-size:14px;color:var(--gray-mid);line-height:1.6;margin-bottom:18px;}
+.confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.confirm-btn{padding:12px;border-radius:10px;border:none;font-size:15px;font-weight:700;cursor:pointer;}
+.confirm-btn.cancel{background:var(--gray-light);color:var(--gray);}
+.confirm-btn.danger{background:var(--red);color:#fff;}
+
+.submit-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border-radius:12px;border:none;font-size:19px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:12px;}
+.submit-btn.sheets{background:#1a7f4b;color:#fff;box-shadow:0 2px 8px rgba(21,128,61,.3);}
+.submit-btn.sheets:active{opacity:.85;}
+.submit-btn:disabled{background:var(--gray-mid);cursor:not-allowed;opacity:.6;}
+
+/* ── Submit Result ── */
+.submit-result{border-radius:12px;padding:14px;text-align:center;margin-top:8px;display:none;}
+.submit-result.show{display:block;}
+.submit-result.ok{background:var(--green-light);border:1.5px solid var(--green);}
+.submit-result.ng{background:var(--red-light);border:1.5px solid var(--red);}
+.submit-result-icon{font-size:24px;margin-bottom:4px;}
+.submit-result-text{font-size:19px;font-weight:700;}
+.submit-result.ok .submit-result-text{color:var(--green);}
+.submit-result.ng .submit-result-text{color:var(--red-dark);}
+
+/* ── Config Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:flex-end;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px 18px calc(var(--safe-bottom) + 20px);width:100%;max-width:480px;}
+.modal-title{font-size:21px;font-weight:700;margin-bottom:4px;}
+.modal-sub{font-size:14px;color:var(--gray-mid);margin-bottom:16px;line-height:1.6;}
+.modal-field{margin-bottom:12px;}
+.modal-label{font-size:13px;font-weight:700;color:var(--gray-mid);margin-bottom:5px;display:block;}
+.modal-input{width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:16px;font-family:inherit;outline:none;color:var(--text);}
+.modal-input:focus{border-color:var(--blue);}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;}
+.modal-btn{padding:12px;border-radius:10px;border:none;font-size:21px;font-weight:700;cursor:pointer;}
+.modal-btn.cancel{background:var(--gray-light);color:var(--gray);}
+.modal-btn.save{background:var(--blue);color:#fff;}
+
+/* ── Gear ── */
+.gear-btn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);color:#fff;border-radius:8px;padding:5px 8px;font-size:17px;cursor:pointer;flex-shrink:0;}
+.gear-btn:active{background:rgba(255,255,255,.3);}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ヘッダー -->
+  <div class="header">
+    <div class="header-row1">
+      <div class="header-icon">🚨</div>
+      <div class="header-titles">
+        <div class="header-title">交通事故対応マニュアル</div>
+        <div class="header-sub">こころのひなた 訪問看護ステーション</div>
+      </div>
+      <!-- 管理者・事務長用シートボタン -->
+      <a class="admin-btn" id="admin-sheet-btn" href="#" target="_blank" onclick="openAdminSheet(event)">
+        🔒 管理者・<br>事務長用シート
+      </a>
+      <!-- 設定ギア -->
+      <button class="gear-btn" onclick="openConfig()" title="設定">⚙️</button>
+    </div>
+    <div class="time-selector">
+      <button class="time-btn active" id="btn-time" onclick="setTime('time')">
+        <span class="tb-icon">🕐</span>
+        <span class="tb-label">営業時間内</span>
+        <span class="tb-sub">平日 通常勤務中</span>
+      </button>
+      <button class="time-btn" id="btn-after" onclick="setTime('after')">
+        <span class="tb-icon">🌙</span>
+        <span class="tb-label">営業時間外</span>
+        <span class="tb-sub">夜間・休日・早朝</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- コンテンツ（タブなし・1画面） -->
+  <div class="content">
+
+    <!-- ====== 営業時間内 ====== -->
+    <div id="flow-time">
+      <div class="mode-banner mode-time">
+        <div class="mode-banner-icon">🕐</div>
+        <div class="mode-banner-text">
+          <div class="mode-banner-title">営業時間内モード</div>
+          <div class="mode-banner-sub">平日通常勤務中の対応手順です</div>
+        </div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div class="step-block">
+        <div class="step-line"><div class="step-circle sc-red">1</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-label sl-red">STEP 1 — まず最初に</div>
+          <div class="step-title">警察へ連絡する</div>
+          <div class="inner-card">
+            <a class="call-btn" href="tel:110">
+              <div class="call-info">
+                <div class="call-name">110番（警察）</div>
+                <div class="call-role">事故直後、最優先で通報</div>
+              </div>
+              <div class="call-dial">
+                <div class="call-dial-icon">📞</div>
+                <div class="call-dial-label">タップして発信</div>
+                <div class="call-dial-num">110</div>
+              </div>
+            </a>
+          </div>
+          <div class="alert danger"><div class="alert-label">必須</div>物損のみでも必ず通報すること。通報なしの示談は絶対にしない。</div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-block">
+        <div class="step-line"><div class="step-circle sc-amber">2</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-label sl-amber">STEP 2 — 上司へ報告</div>
+          <div class="step-title">安全運転管理者へ連絡する</div>
+          <div class="inner-card">
+            <a class="call-btn" href="tel:07015442910">
+              <div class="call-info"><div class="call-badge b-blue">① まずこちら</div><div class="call-name">森脇英樹</div><div class="call-role">安全運転管理者</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">070-1544-2910</div></div>
+            </a>
+            <a class="call-btn" href="tel:08047798910">
+              <div class="call-info"><div class="call-badge b-amber">② つながらない場合</div><div class="call-name">森脇統括</div><div class="call-role">安全運転管理者</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">080-4779-8910</div></div>
+            </a>
+            <a class="call-btn" href="tel:0743593660">
+              <div class="call-info"><div class="call-badge b-green">③ 事務所</div><div class="call-name">こころのひなた 事務所</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">0743-59-3660</div></div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-block">
+        <div class="step-line"><div class="step-circle sc-amber">3</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-label sl-amber">STEP 3 — 公用車は会社対応 / 自家用車は自分で連絡</div>
+          <div class="step-title">保険会社・車屋へ連絡する</div>
+          <div class="inner-card">
+            <a class="call-btn" href="tel:08014262457">
+              <div class="call-info"><div class="call-badge b-blue">① 保険</div><div class="call-name">船田 修嗣（ふなだしゅうじ）</div><div class="call-role">東京海上・保険naracoco</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">080-1426-2457</div></div>
+            </a>
+            <a class="call-btn" href="tel:09059090111">
+              <div class="call-info"><div class="call-badge b-green">② 車屋</div><div class="call-name">坂根 和匡（さかねかずまさ）</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">090-5909-0111</div></div>
+            </a>
+            <a class="call-btn" href="tel:0120243650">
+              <div class="call-info"><div class="call-badge b-amber">③ 車屋につながらない場合</div><div class="call-name">オリックスセフティーサービス24</div><div class="call-role">車両搬送のみ・24時間対応</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">0120-24-3650</div></div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 （事故種別 + 現場記録フォーム） -->
+      <div class="step-block">
+        <div class="step-line"><div class="step-circle sc-purple">4</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-label sl-purple">STEP 4 — 種別を選んで現場記録を記入・送信</div>
+          <div class="step-title">事故の種類を選んで現場記録をスプレッドシートに送る</div>
+
+          <div class="kind-selector">
+            <button class="kind-btn" id="k1" onclick="selectKind('k',1)">① 人身事故</button>
+            <button class="kind-btn" id="k2" onclick="selectKind('k',2)">② 器物破損</button>
+            <button class="kind-btn" id="k3" onclick="selectKind('k',3)">③ その他</button>
+          </div>
+          <div class="alert warning" style="margin-bottom:12px"><div class="alert-label">判断に迷ったら</div>曖昧な場合は「人身事故」として扱い、上司の指示を仰ぐこと。</div>
+
+          <div class="form-section-title">基本情報</div>
+          <div class="form-grid">
+
+            <!-- 発生場所：位置情報取得ボタン付き -->
+            <div class="form-field full">
+              <div class="form-label">発生場所</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input class="form-input" id="f-place" type="text" placeholder="奈良県　　市・郡" style="flex:1">
+                <button onclick="getLocation()" id="loc-btn" style="flex-shrink:0;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:21px;font-weight:700;cursor:pointer;white-space:nowrap">
+                  📍 現在地取得
+                </button>
+              </div>
+              <div id="loc-status" style="font-size:19px;color:var(--gray-mid);margin-top:4px;display:none"></div>
+            </div>
+
+            <!-- 発生日時：起動時自動入力 + 手動修正可 -->
+            <div class="form-field full">
+              <div class="form-label">発生日時（自動取得・手動修正可）</div>
+              <input class="form-input" id="f-datetime" type="datetime-local">
+            </div>
+
+            <div class="form-field"><div class="form-label">記入者</div><input class="form-input" id="f-reporter" type="text" placeholder="記入者名"></div>
+            <div class="form-field"><div class="form-label">事故の種類</div><input class="form-input" id="f-kind" type="text" placeholder="上で選択" readonly></div>
+          </div>
+
+          <div class="form-section-title">相手方の情報</div>
+          <div class="form-grid">
+            <div class="form-field full"><div class="form-label">住所</div><input class="form-input" id="f-addr" type="text" placeholder="相手方の住所"></div>
+            <div class="form-field"><div class="form-label">氏名</div><input class="form-input" id="f-name" type="text" placeholder="氏名"></div>
+            <div class="form-field"><div class="form-label">年齢</div><input class="form-input" id="f-age" type="number" placeholder="歳"></div>
+            <div class="form-field full"><div class="form-label">連絡先</div><input class="form-input" id="f-tel" type="tel" placeholder="電話番号"></div>
+            <div class="form-field"><div class="form-label">車種</div><input class="form-input" id="f-car" type="text" placeholder="車種"></div>
+            <div class="form-field"><div class="form-label">色</div><input class="form-input" id="f-color" type="text" placeholder="色"></div>
+            <div class="form-field"><div class="form-label">車両番号</div><input class="form-input" id="f-plate" type="text" placeholder="ナンバー"></div>
+
+            <!-- ドラレコ有無：トグル選択 -->
+            <div class="form-field">
+              <div class="form-label">ドラレコ有無</div>
+              <div style="display:flex;gap:8px;margin-top:4px">
+                <button class="dashcam-btn" id="dc-on"  onclick="setDashcam('有')" style="flex:1;padding:7px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);font-size:19px;font-weight:700;cursor:pointer;transition:all .15s">有</button>
+                <button class="dashcam-btn" id="dc-off" onclick="setDashcam('無')" style="flex:1;padding:7px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);font-size:19px;font-weight:700;cursor:pointer;transition:all .15s">無</button>
+              </div>
+              <input type="hidden" id="f-dashcam" value="">
+            </div>
+
+            <div class="form-field full"><div class="form-label">免許証番号</div><input class="form-input" id="f-license" type="text" placeholder="免許証番号"></div>
+            <div class="form-field full"><div class="form-label">保険会社</div><input class="form-input" id="f-insurance" type="text" placeholder="保険会社名"></div>
+
+            <!-- 相手方関連の写真 -->
+            <div class="form-field full">
+              <div class="photo-label-row">📷 写真（免許証・車両・ナンバー等）</div>
+              <div class="photo-grid" id="f-photos-person"></div>
+            </div>
+          </div>
+
+          <div class="form-section-title">警察情報</div>
+          <div class="form-grid">
+            <div class="form-field"><div class="form-label">所轄警察署名</div><input class="form-input" id="f-police" type="text" placeholder="〇〇警察署"></div>
+            <div class="form-field"><div class="form-label">担当氏名・課</div><input class="form-input" id="f-officer" type="text" placeholder="担当者名"></div>
+            <div class="form-field full"><div class="form-label">受理番号</div><input class="form-input" id="f-receipt" type="text" placeholder="受理番号"></div>
+          </div>
+
+          <div class="form-section-title">事故状況・目撃者</div>
+          <div class="form-grid">
+            <div class="form-field full"><div class="form-label">事故状況・損傷程度</div><textarea class="form-input" id="f-situation" rows="3" placeholder="状況を記載" style="resize:none;line-height:1.5"></textarea></div>
+            <!-- 事故状況の写真 -->
+            <div class="form-field full">
+              <div class="photo-label-row">📷 写真（破損状況・現場等）</div>
+              <div class="photo-grid" id="f-photos-scene"></div>
+            </div>
+            <!-- 目撃者トグル -->
+            <div class="form-field full">
+              <div class="form-label">目撃者</div>
+              <div style="display:flex;gap:8px;margin-top:4px">
+                <button id="f-wit-on"  onclick="setWitness('有','f')" style="flex:1;padding:8px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);font-size:19px;font-weight:700;cursor:pointer">目撃者あり</button>
+                <button id="f-wit-off" onclick="setWitness('無','f')" style="flex:1;padding:8px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);font-size:19px;font-weight:700;cursor:pointer">目撃者なし</button>
+              </div>
+            </div>
+            <div id="f-witness-fields" style="display:none;grid-column:1/-1">
+              <div class="form-grid" style="margin-bottom:0">
+                <div class="form-field"><div class="form-label">目撃者氏名</div><input class="form-input" id="f-witness-name" type="text" placeholder="氏名"></div>
+                <div class="form-field"><div class="form-label">目撃者連絡先</div><input class="form-input" id="f-witness-tel" type="tel" placeholder="電話番号"></div>
+              </div>
+            </div>
+            <div class="form-field full"><div class="form-label">メモ欄</div><textarea class="form-input" id="f-memo" rows="2" placeholder="その他メモ" style="resize:none;line-height:1.5"></textarea></div>
+          </div>
+
+          <button class="submit-btn sheets" onclick="submitToSheets()" id="submit-btn">
+            📤 入力情報・添付写真を所長・事務長へ送信
+          </button>
+          <div class="submit-result" id="submit-result">
+            <div class="submit-result-icon" id="submit-icon"></div>
+            <div class="submit-result-text" id="submit-text"></div>
+          </div>
+
+          <div class="submit-note">
+            <strong>送信後も入力内容・写真は削除されません。</strong><br>
+            修正・追記後に再度送信すると最新の情報に更新されます。
+          </div>
+
+          <div class="alert info" style="margin-top:10px">
+            <div class="alert-label">提出期限</div>
+            人身事故 → 当日　／　それ以外 → 翌日まで。当事者と所属長で共同作成すること。
+          </div>
+
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="step-block">
+        <div class="step-line"><div class="step-circle sc-green">5</div><div class="step-connector last"></div></div>
+        <div class="step-body">
+          <div class="step-label sl-green">STEP 5 — 上から順番にチェック</div>
+          <div class="step-title">現場での対応チェックリスト</div>
+          <div class="alert danger" style="margin-bottom:10px"><div class="alert-label">⚠️ 絶対NG</div>その場での示談・金銭の約束は絶対にしないこと。交渉は保険会社を通じて行う。</div>
+          <div class="inner-card">
+            <ul class="check-list" id="cl-time">
+              <li onclick="toggleCheck(this,'cl-time','done-time')"><div class="check-box"></div><div class="check-text">事故証明を取得した</div></li>
+              <li onclick="toggleCheck(this,'cl-time','done-time')"><div class="check-box"></div><div class="check-text">示談・約束をしていない<div class="check-note">現場での金銭約束は厳禁</div></div></li>
+              <li onclick="toggleCheck(this,'cl-time','done-time')"><div class="check-box"></div><div class="check-text">公用車のドライブレコーダーのSDカードを取り外して保管</div></li>
+            </ul>
+          </div>
+          <div class="done-banner" id="done-time">
+            <div class="done-banner-icon">✅</div>
+            <div class="done-banner-text">現場対応が完了しました</div>
+          </div>
+
+          <button class="reset-btn" onclick="confirmReset()">
+            ⚠️ リセットボタン：所長・事務長に確認後押す
+          </button>
+          <div class="submit-note" style="border-left-color:var(--red);color:var(--red-dark)">
+            <strong>⚠️ リセットすると入力したすべての情報と写真がアプリ内から削除されます。</strong><br>
+            送信済みのデータは削除されません。
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /flow-time -->
+
+    <!-- ====== 営業時間外 ====== -->
+    <div id="flow-after" style="display:none">
+      <div class="mode-banner mode-after">
+        <div class="mode-banner-icon">🌙</div>
+        <div class="mode-banner-text">
+          <div class="mode-banner-title">営業時間外モード</div>
+          <div class="mode-banner-sub">夜間・休日・早朝の対応手順です</div>
+        </div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div class="step-block">
+        <div class="step-line"><div class="step-circle sc-red">1</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-label sl-red">STEP 1 — まず最初に</div>
+          <div class="step-title">警察へ連絡する</div>
+          <div class="inner-card">
+            <a class="call-btn" href="tel:110">
+              <div class="call-info"><div class="call-name">110番（警察）</div><div class="call-role">事故直後、最優先で通報</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">110</div></div>
+            </a>
+          </div>
+          <div class="alert danger"><div class="alert-label">必須</div>物損のみでも必ず通報すること。通報なしの示談は絶対にしない。</div>
+        </div>
+      </div>
+
+      <!-- STEP 2（時間外：上司へ報告） -->
+      <div class="step-block">
+        <div class="step-line"><div class="step-circle sc-amber">2</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-label sl-amber">STEP 2 — 上司へ報告</div>
+          <div class="step-title">安全運転管理者へ連絡する</div>
+          <div class="inner-card">
+            <a class="call-btn" href="tel:07015442910">
+              <div class="call-info"><div class="call-badge b-blue">① まずこちら</div><div class="call-name">森脇英樹</div><div class="call-role">安全運転管理者</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">070-1544-2910</div></div>
+            </a>
+            <a class="call-btn" href="tel:08047798910">
+              <div class="call-info"><div class="call-badge b-amber">② つながらない場合</div><div class="call-name">森脇統括</div><div class="call-role">安全運転管理者</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">080-4779-8910</div></div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3（時間外：保険・車屋） -->
+      <div class="step-block">
+        <div class="step-line"><div class="step-circle sc-amber">3</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-label sl-amber">STEP 3 — 公用車は会社対応 / 自家用車は自分で連絡</div>
+          <div class="step-title">保険会社・車屋へ連絡する</div>
+          <div class="inner-card">
+            <a class="call-btn" href="tel:08014262457">
+              <div class="call-info"><div class="call-badge b-blue">① 保険</div><div class="call-name">船田 修嗣（ふなだしゅうじ）</div><div class="call-role">東京海上・保険naracoco</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">080-1426-2457</div></div>
+            </a>
+            <a class="call-btn" href="tel:09059090111">
+              <div class="call-info"><div class="call-badge b-green">② 車屋</div><div class="call-name">坂根 和匡（さかねかずまさ）</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">090-5909-0111</div></div>
+            </a>
+            <a class="call-btn" href="tel:0120243650">
+              <div class="call-info"><div class="call-badge b-amber">③ 車屋につながらない場合</div><div class="call-name">オリックスセフティーサービス24</div><div class="call-role">車両搬送のみ・24時間対応</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">0120-24-3650</div></div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4（時間外：時間内と同じフォーム） -->
+      <div class="step-block">
+        <div class="step-line"><div class="step-circle sc-purple">4</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <div class="step-label sl-purple">STEP 4 — 種別を選んで現場記録を記入・送信</div>
+          <div class="step-title">事故の種類を選んで現場記録をスプレッドシートに送る</div>
+
+          <div class="kind-selector">
+            <button class="kind-btn" id="a1" onclick="selectKind('a',1)">① 人身事故</button>
+            <button class="kind-btn" id="a2" onclick="selectKind('a',2)">② 器物破損</button>
+            <button class="kind-btn" id="a3" onclick="selectKind('a',3)">③ その他</button>
+          </div>
+          <div class="alert warning" style="margin-bottom:12px"><div class="alert-label">判断に迷ったら</div>曖昧な場合は「人身事故」として扱い、上司の指示を仰ぐこと。</div>
+
+          <div class="form-section-title">基本情報</div>
+          <div class="form-grid">
+            <div class="form-field full">
+              <div class="form-label">発生場所</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input class="form-input" id="af-place" type="text" placeholder="奈良県　　市・郡" style="flex:1">
+                <button onclick="getLocation('af')" id="loc-btn-af" style="flex-shrink:0;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:21px;font-weight:700;cursor:pointer;white-space:nowrap">📍 現在地取得</button>
+              </div>
+              <div id="loc-status-af" style="font-size:19px;color:var(--gray-mid);margin-top:4px;display:none"></div>
+            </div>
+            <div class="form-field full">
+              <div class="form-label">発生日時（自動取得・手動修正可）</div>
+              <input class="form-input" id="af-datetime" type="datetime-local">
+            </div>
+            <div class="form-field"><div class="form-label">記入者</div><input class="form-input" id="af-reporter" type="text" placeholder="記入者名"></div>
+            <div class="form-field"><div class="form-label">事故の種類</div><input class="form-input" id="af-kind" type="text" placeholder="上で選択" readonly></div>
+          </div>
+
+          <div class="form-section-title">相手方の情報</div>
+          <div class="form-grid">
+            <div class="form-field full"><div class="form-label">住所</div><input class="form-input" id="af-addr" type="text" placeholder="相手方の住所"></div>
+            <div class="form-field"><div class="form-label">氏名</div><input class="form-input" id="af-name" type="text" placeholder="氏名"></div>
+            <div class="form-field"><div class="form-label">年齢</div><input class="form-input" id="af-age" type="number" placeholder="歳"></div>
+            <div class="form-field full"><div class="form-label">連絡先</div><input class="form-input" id="af-tel" type="tel" placeholder="電話番号"></div>
+            <div class="form-field"><div class="form-label">車種</div><input class="form-input" id="af-car" type="text" placeholder="車種"></div>
+            <div class="form-field"><div class="form-label">色</div><input class="form-input" id="af-color" type="text" placeholder="色"></div>
+            <div class="form-field"><div class="form-label">車両番号</div><input class="form-input" id="af-plate" type="text" placeholder="ナンバー"></div>
+            <div class="form-field">
+              <div class="form-label">ドラレコ有無</div>
+              <div style="display:flex;gap:8px;margin-top:4px">
+                <button class="dashcam-btn" id="af-dc-on"  onclick="setDashcam('有','af')" style="flex:1;padding:7px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);font-size:19px;font-weight:700;cursor:pointer">有</button>
+                <button class="dashcam-btn" id="af-dc-off" onclick="setDashcam('無','af')" style="flex:1;padding:7px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);font-size:19px;font-weight:700;cursor:pointer">無</button>
+              </div>
+              <input type="hidden" id="af-dashcam" value="">
+            </div>
+            <div class="form-field full"><div class="form-label">免許証番号</div><input class="form-input" id="af-license" type="text" placeholder="免許証番号"></div>
+            <div class="form-field full"><div class="form-label">保険会社</div><input class="form-input" id="af-insurance" type="text" placeholder="保険会社名"></div>
+
+            <!-- 相手方関連の写真 -->
+            <div class="form-field full">
+              <div class="photo-label-row">📷 写真（免許証・車両・ナンバー等）</div>
+              <div class="photo-grid" id="af-photos-person"></div>
+            </div>
+          </div>
+
+          <div class="form-section-title">警察情報</div>
+          <div class="form-grid">
+            <div class="form-field"><div class="form-label">所轄警察署名</div><input class="form-input" id="af-police" type="text" placeholder="〇〇警察署"></div>
+            <div class="form-field"><div class="form-label">担当氏名・課</div><input class="form-input" id="af-officer" type="text" placeholder="担当者名"></div>
+            <div class="form-field full"><div class="form-label">受理番号</div><input class="form-input" id="af-receipt" type="text" placeholder="受理番号"></div>
+          </div>
+
+          <div class="form-section-title">事故状況・目撃者</div>
+          <div class="form-grid">
+            <div class="form-field full"><div class="form-label">事故状況・損傷程度</div><textarea class="form-input" id="af-situation" rows="3" placeholder="状況を記載" style="resize:none;line-height:1.5"></textarea></div>
+            <!-- 事故状況の写真 -->
+            <div class="form-field full">
+              <div class="photo-label-row">📷 写真（破損状況・現場等）</div>
+              <div class="photo-grid" id="af-photos-scene"></div>
+            </div>
+            <!-- 目撃者トグル -->
+            <div class="form-field full">
+              <div class="form-label">目撃者</div>
+              <div style="display:flex;gap:8px;margin-top:4px">
+                <button id="af-wit-on"  onclick="setWitness('有','af')" style="flex:1;padding:8px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);font-size:19px;font-weight:700;cursor:pointer">目撃者あり</button>
+                <button id="af-wit-off" onclick="setWitness('無','af')" style="flex:1;padding:8px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);font-size:19px;font-weight:700;cursor:pointer">目撃者なし</button>
+              </div>
+            </div>
+            <div id="af-witness-fields" style="display:none;grid-column:1/-1">
+              <div class="form-grid" style="margin-bottom:0">
+                <div class="form-field"><div class="form-label">目撃者氏名</div><input class="form-input" id="af-witness-name" type="text" placeholder="氏名"></div>
+                <div class="form-field"><div class="form-label">目撃者連絡先</div><input class="form-input" id="af-witness-tel" type="tel" placeholder="電話番号"></div>
+              </div>
+            </div>
+            <div class="form-field full"><div class="form-label">メモ欄</div><textarea class="form-input" id="af-memo" rows="2" placeholder="その他メモ" style="resize:none;line-height:1.5"></textarea></div>
+          </div>
+
+          <button class="submit-btn sheets" onclick="submitToSheets('af')" id="af-submit-btn">
+            📤 入力情報・添付写真を所長・事務長へ送信
+          </button>
+          <div class="submit-result" id="af-submit-result">
+            <div class="submit-result-icon" id="af-submit-icon"></div>
+            <div class="submit-result-text" id="af-submit-text"></div>
+          </div>
+
+          <div class="submit-note">
+            <strong>送信後も入力内容・写真は削除されません。</strong><br>
+            修正・追記後に再度送信すると最新の情報に更新されます。
+          </div>
+
+          <div class="alert info" style="margin-top:10px">
+            <div class="alert-label">提出期限</div>
+            人身事故 → 当日　／　それ以外 → 翌日まで。当事者と所属長で共同作成すること。
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5（時間外） -->
+      <div class="step-block">
+        <div class="step-line"><div class="step-circle sc-green">5</div><div class="step-connector last"></div></div>
+        <div class="step-body">
+          <div class="step-label sl-green">STEP 5 — 上から順番にチェック</div>
+          <div class="step-title">現場での対応チェックリスト</div>
+          <div class="alert danger" style="margin-bottom:10px"><div class="alert-label">⚠️ 絶対NG</div>その場での示談・金銭の約束は絶対にしないこと。交渉は保険会社を通じて行う。</div>
+          <div class="inner-card">
+            <ul class="check-list" id="cl-after">
+              <li onclick="toggleCheck(this,'cl-after','done-after')"><div class="check-box"></div><div class="check-text">事故証明を取得した</div></li>
+              <li onclick="toggleCheck(this,'cl-after','done-after')"><div class="check-box"></div><div class="check-text">示談・約束をしていない<div class="check-note">現場での金銭約束は厳禁</div></div></li>
+              <li onclick="toggleCheck(this,'cl-after','done-after')"><div class="check-box"></div><div class="check-text">公用車のドライブレコーダーのSDカードを取り外して保管</div></li>
+              <li onclick="toggleCheck(this,'cl-after','done-after')"><div class="check-box"></div><div class="check-text">自走できない場合、レッカー・代車を手配した</div></li>
+            </ul>
+            <div class="alert danger" style="margin:8px 0 0">
+              <div class="alert-label">⚠️ オリックスセフティーサービス24を利用した場合</div>
+              車両搬送のみのサービスです。自身は公共交通機関またはタクシーで移動すること。
+            </div>
+          </div>
+          <div class="done-banner" id="done-after">
+            <div class="done-banner-icon">✅</div>
+            <div class="done-banner-text">現場対応が完了しました</div>
+          </div>
+
+          <button class="reset-btn" onclick="confirmReset()">
+            ⚠️ リセットボタン：所長・事務長に確認後押す
+          </button>
+          <div class="submit-note" style="border-left-color:var(--red);color:var(--red-dark)">
+            <strong>⚠️ リセットすると入力したすべての情報と写真がアプリ内から削除されます。</strong><br>
+            送信済みのデータは削除されません。
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /flow-after -->
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<!-- リセット確認モーダル -->
+<div class="confirm-overlay" id="reset-modal">
+  <div class="confirm-box">
+    <div class="confirm-title">🗑️ リセットの確認</div>
+    <div class="confirm-body">
+      入力したすべての情報と写真を削除します。<br><br>
+      <strong>この操作は元に戻せません。</strong><br>
+      送信済みのデータは削除されません。
+    </div>
+    <div class="confirm-actions">
+      <button class="confirm-btn cancel" onclick="closeReset()">キャンセル</button>
+      <button class="confirm-btn danger" onclick="doReset()">削除する</button>
+    </div>
+  </div>
+</div>
+
+<!-- 設定モーダル -->
+<div class="modal-overlay" id="config-modal">
+  <div class="modal">
+    <div class="modal-title">⚙️ アプリ設定</div>
+    <div class="modal-sub">各URLを設定してください。設定後はボタン1つでシートへの転記と管理者シートへのアクセスができます。</div>
+    <div class="modal-field">
+      <label class="modal-label">GAS Web アプリ URL（現場記録の転記先）</label>
+      <input class="modal-input" id="config-url" type="url" placeholder="https://script.google.com/macros/s/...">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">管理者・事務長用スプレッドシート URL</label>
+      <input class="modal-input" id="config-sheet-url" type="url" placeholder="https://docs.google.com/spreadsheets/d/...">
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeConfig()">キャンセル</button>
+      <button class="modal-btn save" onclick="saveConfig()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let kindLabel = '';
+
+/* ── 起動時の初期化 ── */
+window.addEventListener('load', () => {
+  initDatetime('f');
+  initDatetime('af');
+  // 写真グリッドを初期化
+  initPhotoGrid('f-photos-person',  '免許証・車両・ナンバー等', 10);
+  initPhotoGrid('f-photos-scene',   '破損状況・現場等',         10);
+  initPhotoGrid('af-photos-person', '免許証・車両・ナンバー等', 10);
+  initPhotoGrid('af-photos-scene',  '破損状況・現場等',         10);
+});
+
+/* ── 写真グリッドの初期化 ── */
+function initPhotoGrid(gridId, hint, maxPhotos) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.dataset.max  = maxPhotos;
+  grid.dataset.hint = hint;
+  addPhotoSlot(grid);
+}
+
+/* ── 追加ボタン（＋枠）を1つ生成 ── */
+function addPhotoSlot(grid) {
+  const max = parseInt(grid.dataset.max || 6);
+  const current = grid.querySelectorAll('.photo-slot').length;
+  if (current >= max) return;
+
+  const slot = document.createElement('div');
+  slot.className = 'photo-slot';
+  slot.innerHTML = `
+    <span class="photo-slot-icon">📷</span>
+    <span class="photo-slot-label">タップして<br>追加</span>
+    <input type="file" accept="image/*" capture="environment" onchange="onPhotoSelected(this)">
+  `;
+  grid.appendChild(slot);
+}
+
+/* ── 写真が選択されたとき ── */
+function onPhotoSelected(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const slot  = input.parentElement;
+  const grid  = slot.parentElement;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    // 写真をサムネイル表示に変換
+    slot.innerHTML = `
+      <img src="${e.target.result}" alt="添付写真">
+      <button class="photo-del" onclick="removePhoto(this)" type="button">✕</button>
+    `;
+    // データ保持
+    slot.dataset.dataUrl = e.target.result;
+    // 次の＋枠を追加
+    addPhotoSlot(grid);
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── 写真を削除 ── */
+function removePhoto(btn) {
+  const slot = btn.parentElement;
+  const grid = slot.parentElement;
+  slot.remove();
+  // ＋枠がなければ補充
+  const hasAddSlot = Array.from(grid.querySelectorAll('.photo-slot'))
+    .some(s => s.querySelector('input[type=file]'));
+  if (!hasAddSlot) addPhotoSlot(grid);
+}
+
+/* ── 写真データをBase64配列で取得 ── */
+function getPhotos(gridId) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return [];
+  return Array.from(grid.querySelectorAll('.photo-slot[data-data-url]'))
+    .map(s => s.dataset.dataUrl);
+}
+
+/* ── 発生日時：現在時刻を自動セット ── */
+function initDatetime(prefix) {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const local = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const el = document.getElementById(prefix + '-datetime');
+  if (el) el.value = local;
+}
+
+/* ── 発生場所：位置情報取得（prefix: 'f' or 'af'） ── */
+function getLocation(prefix) {
+  prefix = prefix || 'f';
+  const btn    = document.getElementById('loc-btn'    + (prefix === 'f' ? '' : '-af'));
+  const status = document.getElementById('loc-status' + (prefix === 'f' ? '' : '-af'));
+  const input  = document.getElementById(prefix + '-place');
+
+  if (!navigator.geolocation) {
+    status.style.display = 'block';
+    status.style.color   = 'var(--red-dark)';
+    status.textContent   = '⚠️ この端末では位置情報を取得できません';
+    return;
+  }
+
+  btn.textContent      = '取得中…';
+  btn.disabled         = true;
+  status.style.display = 'block';
+  status.style.color   = 'var(--gray-mid)';
+  status.textContent   = '📍 位置情報を取得しています…';
+
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      status.textContent = '🗺️ 住所に変換中…';
+      try {
+        const res  = await fetch(`https://mreversegeocoder.gsi.go.jp/reverse-geocoder/LonLatToAddress?lat=${lat}&lon=${lng}`);
+        const json = await res.json();
+        const r    = json.results;
+        if (r && r.muniCd) {
+          input.value          = (r.prefName || '') + (r.city || '') + (r.lv01Nm || '');
+          status.style.color   = 'var(--green)';
+          status.textContent   = `✅ 取得成功（${lat.toFixed(5)}, ${lng.toFixed(5)}）`;
+        } else {
+          input.value          = `緯度 ${lat.toFixed(5)} / 経度 ${lng.toFixed(5)}`;
+          status.style.color   = 'var(--amber)';
+          status.textContent   = '⚠️ 住所変換できませんでした。座標を入力しました。';
+        }
+      } catch(e) {
+        input.value          = `緯度 ${lat.toFixed(5)} / 経度 ${lng.toFixed(5)}`;
+        status.style.color   = 'var(--amber)';
+        status.textContent   = '⚠️ 住所変換できませんでした。座標を入力しました。';
+      }
+      btn.innerHTML = '📍 再取得';
+      btn.disabled  = false;
+    },
+    (err) => {
+      status.style.color = 'var(--red-dark)';
+      const msgs = {1:'位置情報の許可が必要です', 2:'位置情報を取得できませんでした', 3:'タイムアウトしました'};
+      status.textContent = `⚠️ ${msgs[err.code] || 'エラーが発生しました'}`;
+      btn.innerHTML = '📍 現在地取得';
+      btn.disabled  = false;
+    },
+    { timeout: 10000, enableHighAccuracy: true }
+  );
+}
+
+/* ── 目撃者トグル（prefix: 'f' or 'af'） ── */
+function setWitness(val, prefix) {
+  const onBtn  = document.getElementById(prefix + '-wit-on');
+  const offBtn = document.getElementById(prefix + '-wit-off');
+  const fields = document.getElementById(prefix + '-witness-fields');
+  const base   = 'flex:1;padding:8px 0;border-radius:8px;font-size:19px;font-weight:700;cursor:pointer;';
+  if (val === '有') {
+    onBtn.style.cssText  = base + 'border:2px solid var(--blue);background:var(--blue-light);color:var(--blue);';
+    offBtn.style.cssText = base + 'border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);';
+    fields.style.display = 'contents';
+  } else {
+    offBtn.style.cssText = base + 'border:2px solid var(--gray);background:var(--gray-light);color:var(--gray);';
+    onBtn.style.cssText  = base + 'border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);';
+    fields.style.display = 'none';
+    // 非表示時は入力をクリア
+    const nameEl = document.getElementById(prefix + '-witness-name');
+    const telEl  = document.getElementById(prefix + '-witness-tel');
+    if (nameEl) nameEl.value = '';
+    if (telEl)  telEl.value  = '';
+  }
+}
+
+/* ── ドラレコ有無トグル（prefix: 'f' or 'af'） ── */
+function setDashcam(val, prefix) {
+  prefix = prefix || 'f';
+  const onId  = prefix === 'f' ? 'dc-on'  : 'af-dc-on';
+  const offId = prefix === 'f' ? 'dc-off' : 'af-dc-off';
+  const hidId = prefix === 'f' ? 'f-dashcam' : 'af-dashcam';
+  document.getElementById(hidId).value = val;
+  const base = 'flex:1;padding:7px 0;border-radius:8px;font-size:19px;font-weight:700;cursor:pointer;';
+  if (val === '有') {
+    document.getElementById(onId).style.cssText  = base + 'border:2px solid var(--green);background:var(--green-light);color:var(--green);';
+    document.getElementById(offId).style.cssText = base + 'border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);';
+  } else {
+    document.getElementById(offId).style.cssText = base + 'border:2px solid var(--red);background:var(--red-light);color:var(--red-dark);';
+    document.getElementById(onId).style.cssText  = base + 'border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);';
+  }
+}
+
+/* ── 時間帯切替 ── */
+function setTime(mode) {
+  document.getElementById('btn-time').classList.toggle('active', mode === 'time');
+  document.getElementById('btn-after').classList.toggle('active', mode === 'after');
+  document.getElementById('flow-time').style.display  = mode === 'time'  ? 'block' : 'none';
+  document.getElementById('flow-after').style.display = mode === 'after' ? 'block' : 'none';
+  document.querySelector('.content').scrollTo({top:0});
+}
+
+/* ── チェックボックス ── */
+function toggleCheck(li, listId, bannerId) {
+  li.classList.toggle('done');
+  if (listId && bannerId) {
+    const items = document.getElementById(listId).querySelectorAll('li');
+    const allDone = Array.from(items).every(l => l.classList.contains('done'));
+    document.getElementById(bannerId).classList.toggle('show', allDone);
+  }
+}
+
+/* ── 事故種別 ── */
+function selectKind(prefix, n) {
+  const labels = {1:'人身事故', 2:'器物破損', 3:'その他'};
+  const colors  = {1:'k-red', 2:'k-amber', 3:'k-blue'};
+  const label = labels[n];
+  // 時間内・時間外どちらの種類欄にも反映
+  ['f-kind','af-kind'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = label;
+  });
+  [1,2,3].forEach(i => {
+    const btn = document.getElementById(prefix + i);
+    if (btn) btn.className = 'kind-btn' + (i === n ? ' ' + colors[i] : '');
+  });
+}
+
+/* ── スプレッドシート転記（prefix: 'f' or 'af'） ── */
+async function submitToSheets(prefix) {
+  prefix = prefix || 'f';
+  const gasUrl = localStorage.getItem('gas_url');
+  if (!gasUrl) { openConfig(); return; }
+
+  const v = id => (document.getElementById(id) || {}).value || '';
+  const p = k => v(prefix + '-' + k);
+
+  const data = {
+    送信日時:     new Date().toLocaleString('ja-JP'),
+    発生日時:     p('datetime'),
+    発生場所:     p('place'),
+    事故の種類:   p('kind'),
+    記入者:       p('reporter'),
+    相手方住所:   p('addr'),
+    相手方氏名:   p('name'),
+    相手方年齢:   p('age'),
+    相手方連絡先: p('tel'),
+    車種:         p('car'),
+    色:           p('color'),
+    車両番号:     p('plate'),
+    ドラレコ有無: p('dashcam'),
+    免許証番号:   p('license'),
+    保険会社:     p('insurance'),
+    所轄警察署:   p('police'),
+    警察担当者:   p('officer'),
+    受理番号:     p('receipt'),
+    事故状況:     p('situation'),
+    目撃者氏名:   p('witness-name'),
+    目撃者連絡先: p('witness-tel'),
+    メモ:         p('memo'),
+    相手方写真:   getPhotos(prefix + '-photos-person'),
+    事故状況写真: getPhotos(prefix + '-photos-scene'),
+  };
+
+  const btnId    = prefix === 'f' ? 'submit-btn'    : 'af-submit-btn';
+  const resultId = prefix === 'f' ? 'submit-result' : 'af-submit-result';
+  const iconId   = prefix === 'f' ? 'submit-icon'   : 'af-submit-icon';
+  const textId   = prefix === 'f' ? 'submit-text'   : 'af-submit-text';
+
+  const btn = document.getElementById(btnId);
+  btn.disabled    = true;
+  btn.textContent = '送信中…';
+
+  try {
+    const encoded = encodeURIComponent(JSON.stringify(data));
+    const url = gasUrl + '?data=' + encoded;
+    await fetch(url, { method: 'GET', mode: 'no-cors' });
+    showResult(resultId, iconId, textId, 'ok', '✅', '所長・事務長へ送信しました！');
+  } catch(e) {
+    showResult(resultId, iconId, textId, 'ng', '❌', '送信に失敗しました。設定を確認してください。');
+  } finally {
+    btn.disabled  = false;
+    btn.innerHTML = '📤 入力情報・添付写真を所長・事務長へ送信';
+  }
+}
+
+function showResult(resultId, iconId, textId, type, icon, text) {
+  const el = document.getElementById(resultId);
+  if (!el) return;
+  el.className = 'submit-result show ' + type;
+  document.getElementById(iconId).textContent = icon;
+  document.getElementById(textId).textContent = text;
+  setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+/* ── リセット確認・実行 ── */
+function confirmReset() {
+  document.getElementById('reset-modal').classList.add('show');
+}
+function closeReset() {
+  document.getElementById('reset-modal').classList.remove('show');
+}
+function doReset() {
+  // テキスト入力・テキストエリアをすべてクリア
+  document.querySelectorAll('.form-input').forEach(el => { el.value = ''; });
+
+  // hidden inputもクリア
+  ['f-dashcam','af-dashcam'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  // ドラレコボタンのスタイルをリセット
+  const dcBase = 'flex:1;padding:7px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);font-size:19px;font-weight:700;cursor:pointer;';
+  ['dc-on','dc-off','af-dc-on','af-dc-off'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.style.cssText = dcBase;
+  });
+
+  // 目撃者フィールドを非表示に戻す
+  ['f-witness-fields','af-witness-fields'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  // 目撃者ボタンのスタイルをリセット
+  const witBase = 'flex:1;padding:8px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--gray-mid);font-size:19px;font-weight:700;cursor:pointer;';
+  ['f-wit-on','f-wit-off','af-wit-on','af-wit-off'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.style.cssText = witBase;
+  });
+
+  // 事故種別ボタンをリセット
+  ['k1','k2','k3','a1','a2','a3'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.className = 'kind-btn';
+  });
+
+  // 発生日時を現在時刻で再セット
+  initDatetime('f');
+  initDatetime('af');
+
+  // 写真グリッドをリセット
+  [
+    ['f-photos-person',  10],
+    ['f-photos-scene',   10],
+    ['af-photos-person', 10],
+    ['af-photos-scene',  10],
+  ].forEach(([id, max]) => {
+    const grid = document.getElementById(id);
+    if (grid) {
+      grid.innerHTML = '';
+      grid.dataset.max = max;
+      addPhotoSlot(grid);
+    }
+  });
+
+  // チェックリストをリセット
+  document.querySelectorAll('.check-list li').forEach(li => li.classList.remove('done'));
+  document.querySelectorAll('.done-banner').forEach(el => el.classList.remove('show'));
+
+  // 送信結果表示をクリア
+  ['submit-result','af-submit-result'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('show');
+  });
+
+  closeReset();
+  document.querySelector('.content').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openAdminSheet(e) {
+  const url = localStorage.getItem('sheet_url');
+  if (!url) {
+    e.preventDefault();
+    openConfig();
+    return;
+  }
+  document.getElementById('admin-sheet-btn').href = url;
+}
+
+/* ── 設定モーダル ── */
+function openConfig() {
+  document.getElementById('config-url').value = localStorage.getItem('gas_url') || '';
+  document.getElementById('config-sheet-url').value = localStorage.getItem('sheet_url') || '';
+  document.getElementById('config-modal').classList.add('show');
+}
+function closeConfig() {
+  document.getElementById('config-modal').classList.remove('show');
+}
+function saveConfig() {
+  const gasUrl   = document.getElementById('config-url').value.trim();
+  const sheetUrl = document.getElementById('config-sheet-url').value.trim();
+  if (gasUrl)   localStorage.setItem('gas_url',   gasUrl);   else localStorage.removeItem('gas_url');
+  if (sheetUrl) localStorage.setItem('sheet_url', sheetUrl); else localStorage.removeItem('sheet_url');
+  if (sheetUrl) document.getElementById('admin-sheet-btn').href = sheetUrl;
+  closeConfig();
+}
+
+/* 起動時にURLを復元 */
+(function() {
+  const url = localStorage.getItem('sheet_url');
+  if (url) document.getElementById('admin-sheet-btn').href = url;
+})();
+</script>
+</body>
+</html>
