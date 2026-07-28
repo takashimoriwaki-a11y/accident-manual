@@ -46,25 +46,27 @@ html,body{height:100%;font-family:-apple-system,'Helvetica Neue',sans-serif;back
 .admin-btn:active{background:rgba(255,255,255,.3);}
 
 /* 時間帯セレクター — コンパクトトグル */
-.time-selector{display:flex;gap:0;background:rgba(0,0,0,.25);border-radius:10px;padding:3px;margin-top:8px;}
+.time-selector{display:flex;gap:6px;background:rgba(0,0,0,.2);border-radius:12px;padding:5px;margin-top:10px;}
 .time-btn{
-  flex:1;padding:7px 6px;border-radius:8px;
-  border:none;
-  font-size:14px;font-weight:700;cursor:pointer;
-  transition:all .18s;text-align:center;
-  background:transparent;
-  color:rgba(255,255,255,.45);
-  display:flex;align-items:center;justify-content:center;gap:5px;
+  flex:1;padding:10px 6px;border-radius:9px;
+  border:2px solid rgba(255,255,255,.3);
+  font-size:15px;font-weight:700;cursor:pointer;
+  transition:all .2s;text-align:center;
+  background:rgba(255,255,255,.15);
+  color:rgba(255,255,255,.85);
+  display:flex;align-items:center;justify-content:center;gap:6px;
 }
-.time-btn .tb-icon{font-size:15px;}
-.time-btn .tb-label{font-size:14px;font-weight:700;}
+.time-btn .tb-icon{font-size:18px;}
+.time-btn .tb-label{font-size:15px;font-weight:800;}
 .time-btn .tb-sub{display:none;}
 .time-btn.active{
-  background:#fff;color:var(--red);
-  box-shadow:0 1px 4px rgba(0,0,0,.2);
+  background:#FFE600;color:#7a2000;
+  border-color:#FFE600;
+  box-shadow:0 2px 8px rgba(0,0,0,.25);
 }
 .time-btn.active .tb-icon{opacity:1;}
-.time-btn.active .tb-label{color:var(--red);}
+.time-btn.active .tb-label{color:#7a2000;}
+.time-btn:not(.active) .tb-label{text-decoration:none;opacity:1;}
 
 /* コンテンツ上部の現在モードバナー */
 .mode-banner{
@@ -265,12 +267,10 @@ li.done .check-text{text-decoration:line-through;}
       <button class="time-btn active" id="btn-time" onclick="setTime('time')">
         <span class="tb-icon">🕐</span>
         <span class="tb-label">営業時間内</span>
-        <span class="tb-sub">平日 通常勤務中</span>
       </button>
       <button class="time-btn" id="btn-after" onclick="setTime('after')">
         <span class="tb-icon">🌙</span>
         <span class="tb-label">営業時間外</span>
-        <span class="tb-sub">夜間・休日・早朝</span>
       </button>
     </div>
   </div>
