@@ -293,21 +293,8 @@ li.done .check-text{text-decoration:line-through;}
         <div class="step-line"><div class="step-circle sc-red">1</div><div class="step-connector"></div></div>
         <div class="step-body">
           <div class="step-label sl-red">STEP 1 — まず最初に</div>
-          <div class="step-title">警察へ連絡する</div>
-          <div class="inner-card">
-            <a class="call-btn" href="tel:110">
-              <div class="call-info">
-                <div class="call-name">110番（警察）</div>
-                <div class="call-role">事故直後、最優先で通報</div>
-              </div>
-              <div class="call-dial">
-                <div class="call-dial-icon">📞</div>
-                <div class="call-dial-label">タップして発信</div>
-                <div class="call-dial-num">110</div>
-              </div>
-            </a>
-          </div>
-          <div class="alert danger"><div class="alert-label">必須</div>物損のみでも必ず通報すること。通報なしの示談は絶対にしない。</div>
+          <div class="step-title">自分と相手のケガを確認する</div>
+          <div class="alert danger"><div class="alert-label">最優先</div>自分・相手・同乗者のケガの有無と程度を確認すること。ケガがある場合は119番にも通報する。</div>
         </div>
       </div>
 
@@ -327,7 +314,7 @@ li.done .check-text{text-decoration:line-through;}
               <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">080-4779-8910</div></div>
             </a>
             <a class="call-btn" href="tel:0743593660">
-              <div class="call-info"><div class="call-badge b-green">③ 事務所</div><div class="call-name">こころのひなた 事務所</div></div>
+              <div class="call-info"><div class="call-badge b-green">③ どちらにもつながらない場合</div><div class="call-name">こころのひなた 事務所</div></div>
               <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">0743-59-3660</div></div>
             </a>
           </div>
@@ -336,24 +323,24 @@ li.done .check-text{text-decoration:line-through;}
 
       <!-- STEP 3 -->
       <div class="step-block">
-        <div class="step-line"><div class="step-circle sc-amber">3</div><div class="step-connector"></div></div>
+        <div class="step-line"><div class="step-circle sc-red">3</div><div class="step-connector"></div></div>
         <div class="step-body">
-          <div class="step-label sl-amber">STEP 3 — 公用車は会社対応 / 自家用車は自分で連絡</div>
-          <div class="step-title">保険会社・車屋へ連絡する</div>
+          <div class="step-label sl-red">STEP 3 — 警察へ通報</div>
+          <div class="step-title">警察へ連絡する</div>
           <div class="inner-card">
-            <a class="call-btn" href="tel:08014262457">
-              <div class="call-info"><div class="call-badge b-blue">① 保険</div><div class="call-name">船田 修嗣（ふなだしゅうじ）</div><div class="call-role">東京海上・保険naracoco</div></div>
-              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">080-1426-2457</div></div>
-            </a>
-            <a class="call-btn" href="tel:09059090111">
-              <div class="call-info"><div class="call-badge b-green">② 車屋</div><div class="call-name">坂根 和匡（さかねかずまさ）</div></div>
-              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">090-5909-0111</div></div>
-            </a>
-            <a class="call-btn" href="tel:0120243650">
-              <div class="call-info"><div class="call-badge b-amber">③ 車屋につながらない場合</div><div class="call-name">オリックスセフティーサービス24</div><div class="call-role">車両搬送のみ・24時間対応</div></div>
-              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">0120-24-3650</div></div>
+            <a class="call-btn" href="tel:110">
+              <div class="call-info">
+                <div class="call-name">110番（警察）</div>
+                <div class="call-role">物損のみでも必ず通報すること</div>
+              </div>
+              <div class="call-dial">
+                <div class="call-dial-icon">📞</div>
+                <div class="call-dial-label">タップして発信</div>
+                <div class="call-dial-num">110</div>
+              </div>
             </a>
           </div>
+          <div class="alert danger"><div class="alert-label">必須</div>物損のみでも必ず通報すること。通報なしの示談は絶対にしない。</div>
         </div>
       </div>
 
@@ -429,8 +416,6 @@ li.done .check-text{text-decoration:line-through;}
           <div class="form-section-title">警察情報</div>
           <div class="form-grid">
             <div class="form-field"><div class="form-label">所轄警察署名</div><input class="form-input" id="f-police" type="text" placeholder="〇〇警察署"></div>
-            <div class="form-field"><div class="form-label">担当氏名・課</div><input class="form-input" id="f-officer" type="text" placeholder="担当者名"></div>
-            <div class="form-field full"><div class="form-label">受理番号</div><input class="form-input" id="f-receipt" type="text" placeholder="受理番号"></div>
           </div>
 
           <div class="form-section-title">事故状況・目撃者</div>
@@ -439,6 +424,7 @@ li.done .check-text{text-decoration:line-through;}
             <!-- 事故状況の写真 -->
             <div class="form-field full">
               <div class="photo-label-row">📷 写真（破損状況・現場等）</div>
+              <div class="alert warning" style="margin:0 0 8px"><div class="alert-label">📸 重要</div>相手方の破損状況は細かく複数枚撮影して記録に残すこと。</div>
               <div class="photo-grid" id="f-photos-scene"></div>
             </div>
             <!-- 目撃者トグル -->
@@ -479,16 +465,15 @@ li.done .check-text{text-decoration:line-through;}
         </div>
       </div>
 
-      <!-- STEP 5 -->
+      <!-- STEP 4 （チェックリスト） -->
       <div class="step-block">
-        <div class="step-line"><div class="step-circle sc-green">5</div><div class="step-connector last"></div></div>
+        <div class="step-line"><div class="step-circle sc-green">4</div><div class="step-connector last"></div></div>
         <div class="step-body">
-          <div class="step-label sl-green">STEP 5 — 上から順番にチェック</div>
+          <div class="step-label sl-green">STEP 4 — 上から順番にチェック</div>
           <div class="step-title">現場での対応チェックリスト</div>
           <div class="alert danger" style="margin-bottom:10px"><div class="alert-label">⚠️ 絶対NG</div>その場での示談・金銭の約束は絶対にしないこと。交渉は保険会社を通じて行う。</div>
           <div class="inner-card">
             <ul class="check-list" id="cl-time">
-              <li onclick="toggleCheck(this,'cl-time','done-time')"><div class="check-box"></div><div class="check-text">事故証明を取得した</div></li>
               <li onclick="toggleCheck(this,'cl-time','done-time')"><div class="check-box"></div><div class="check-text">示談・約束をしていない<div class="check-note">現場での金銭約束は厳禁</div></div></li>
               <li onclick="toggleCheck(this,'cl-time','done-time')"><div class="check-box"></div><div class="check-text">公用車のドライブレコーダーのSDカードを取り外して保管</div></li>
             </ul>
@@ -525,14 +510,8 @@ li.done .check-text{text-decoration:line-through;}
         <div class="step-line"><div class="step-circle sc-red">1</div><div class="step-connector"></div></div>
         <div class="step-body">
           <div class="step-label sl-red">STEP 1 — まず最初に</div>
-          <div class="step-title">警察へ連絡する</div>
-          <div class="inner-card">
-            <a class="call-btn" href="tel:110">
-              <div class="call-info"><div class="call-name">110番（警察）</div><div class="call-role">事故直後、最優先で通報</div></div>
-              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">110</div></div>
-            </a>
-          </div>
-          <div class="alert danger"><div class="alert-label">必須</div>物損のみでも必ず通報すること。通報なしの示談は絶対にしない。</div>
+          <div class="step-title">自分と相手のケガを確認する</div>
+          <div class="alert danger"><div class="alert-label">最優先</div>自分・相手・同乗者のケガの有無と程度を確認すること。ケガがある場合は119番にも通報する。</div>
         </div>
       </div>
 
@@ -555,26 +534,31 @@ li.done .check-text{text-decoration:line-through;}
         </div>
       </div>
 
-      <!-- STEP 3（時間外：保険・車屋） -->
+      <!-- STEP 3（時間外：警察・保険・車屋） -->
       <div class="step-block">
-        <div class="step-line"><div class="step-circle sc-amber">3</div><div class="step-connector"></div></div>
+        <div class="step-line"><div class="step-circle sc-red">3</div><div class="step-connector"></div></div>
         <div class="step-body">
-          <div class="step-label sl-amber">STEP 3 — 公用車は会社対応 / 自家用車は自分で連絡</div>
-          <div class="step-title">保険会社・車屋へ連絡する</div>
+          <div class="step-label sl-red">STEP 3 — 警察へ通報 / 公用車は会社対応・自家用車は自分で連絡</div>
+          <div class="step-title">警察・保険会社・車屋へ連絡する</div>
           <div class="inner-card">
+            <a class="call-btn" href="tel:110">
+              <div class="call-info"><div class="call-badge b-blue">① 警察</div><div class="call-name">110番（警察）</div><div class="call-role">物損のみでも必ず通報すること</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">110</div></div>
+            </a>
             <a class="call-btn" href="tel:08014262457">
-              <div class="call-info"><div class="call-badge b-blue">① 保険</div><div class="call-name">船田 修嗣（ふなだしゅうじ）</div><div class="call-role">東京海上・保険naracoco</div></div>
+              <div class="call-info"><div class="call-badge b-amber">② 保険</div><div class="call-name">船田 修嗣（ふなだしゅうじ）</div><div class="call-role">東京海上・保険naracoco</div></div>
               <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">080-1426-2457</div></div>
             </a>
             <a class="call-btn" href="tel:09059090111">
-              <div class="call-info"><div class="call-badge b-green">② 車屋</div><div class="call-name">坂根 和匡（さかねかずまさ）</div></div>
+              <div class="call-info"><div class="call-badge b-green">③ 車屋</div><div class="call-name">坂根 和匡（さかねかずまさ）</div></div>
               <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">090-5909-0111</div></div>
             </a>
-            <a class="call-btn" href="tel:0120243650">
-              <div class="call-info"><div class="call-badge b-amber">③ 車屋につながらない場合</div><div class="call-name">オリックスセフティーサービス24</div><div class="call-role">車両搬送のみ・24時間対応</div></div>
-              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">0120-24-3650</div></div>
+            <a class="call-btn" href="tel:0742301331">
+              <div class="call-info"><div class="call-badge b-amber">④ 車屋につながらない場合</div><div class="call-name">東京海上日動</div><div class="call-role">24時間対応</div></div>
+              <div class="call-dial"><div class="call-dial-icon">📞</div><div class="call-dial-label">タップして発信</div><div class="call-dial-num">0742-30-1331</div></div>
             </a>
           </div>
+          <div class="alert danger"><div class="alert-label">必須</div>物損のみでも必ず警察に通報すること。通報なしの示談は絶対にしない。</div>
         </div>
       </div>
 
@@ -640,8 +624,6 @@ li.done .check-text{text-decoration:line-through;}
           <div class="form-section-title">警察情報</div>
           <div class="form-grid">
             <div class="form-field"><div class="form-label">所轄警察署名</div><input class="form-input" id="af-police" type="text" placeholder="〇〇警察署"></div>
-            <div class="form-field"><div class="form-label">担当氏名・課</div><input class="form-input" id="af-officer" type="text" placeholder="担当者名"></div>
-            <div class="form-field full"><div class="form-label">受理番号</div><input class="form-input" id="af-receipt" type="text" placeholder="受理番号"></div>
           </div>
 
           <div class="form-section-title">事故状況・目撃者</div>
@@ -650,6 +632,7 @@ li.done .check-text{text-decoration:line-through;}
             <!-- 事故状況の写真 -->
             <div class="form-field full">
               <div class="photo-label-row">📷 写真（破損状況・現場等）</div>
+              <div class="alert warning" style="margin:0 0 8px"><div class="alert-label">📸 重要</div>相手方の破損状況は細かく複数枚撮影して記録に残すこと。</div>
               <div class="photo-grid" id="af-photos-scene"></div>
             </div>
             <!-- 目撃者トグル -->
@@ -698,15 +681,10 @@ li.done .check-text{text-decoration:line-through;}
           <div class="alert danger" style="margin-bottom:10px"><div class="alert-label">⚠️ 絶対NG</div>その場での示談・金銭の約束は絶対にしないこと。交渉は保険会社を通じて行う。</div>
           <div class="inner-card">
             <ul class="check-list" id="cl-after">
-              <li onclick="toggleCheck(this,'cl-after','done-after')"><div class="check-box"></div><div class="check-text">事故証明を取得した</div></li>
               <li onclick="toggleCheck(this,'cl-after','done-after')"><div class="check-box"></div><div class="check-text">示談・約束をしていない<div class="check-note">現場での金銭約束は厳禁</div></div></li>
               <li onclick="toggleCheck(this,'cl-after','done-after')"><div class="check-box"></div><div class="check-text">公用車のドライブレコーダーのSDカードを取り外して保管</div></li>
               <li onclick="toggleCheck(this,'cl-after','done-after')"><div class="check-box"></div><div class="check-text">自走できない場合、レッカー・代車を手配した</div></li>
             </ul>
-            <div class="alert danger" style="margin:8px 0 0">
-              <div class="alert-label">⚠️ オリックスセフティーサービス24を利用した場合</div>
-              車両搬送のみのサービスです。自身は公共交通機関またはタクシーで移動すること。
-            </div>
           </div>
           <div class="done-banner" id="done-after">
             <div class="done-banner-icon">✅</div>
